@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equity Tracker</title>
+  <style>
+    body {
+      background-color: #fff8dc;
+      font-family: sans-serif;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #b58900;
+    }
+    .person {
+      margin: 10px 0;
+      font-size: 1.2em;
+    }
+    .controls {
+      margin: 5px 0 20px;
+    }
+    button {
+      margin: 2px;
+      padding: 6px 10px;
+      background-color: #ffd700;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #f0c300;
+    }
+  </style>
+</head>
+<body>
+  <h1>Equity Tracker</h1>
+  <div id="members"></div>
+  <button onclick="resetShares()">🔁 Reset</button>
+
+  <script>
+    const names = ['Papa', 'Nika', 'Sandro', 'Dore'];
+    const penalties = [0.1, 0.2, 0.5, 1];
+    let shares = {};
+
+    function init() {
+      names.forEach(name => shares[name] = 25);
+      render();
+    }
+
+    function render() {
+      const container = document.getElementById('members');
+      container.innerHTML = '';
+      names.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'person';
+        div.innerHTML = `<strong>${name}</strong>: ${shares[name].toFixed(2)}%
+          <div class="controls">
+            ${penalties.map(p => `<button onclick="applyPenalty('${name}', ${p})">Lose ${p}%</button>`).join('')}
+          </div>`;
+        container.appendChild(div);
+      });
+    }
+
+    function applyPenalty(loser, amount) {
+      if (shares[loser] < amount) return;
+      shares[loser] -= amount;
+      const gain = amount / (names.length - 1);
+      names.forEach(name => {
+        if (name !== loser) shares[name] += gain;
+      });
+      render();
+    }
+
+    function resetShares() {
+      names.forEach(name => shares[name] = 25);
+      render();
+    }
+
+    init();
+  </script>
+</body>
+</html>
